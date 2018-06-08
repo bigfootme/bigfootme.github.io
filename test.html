@@ -42,9 +42,22 @@ var onGround = ["皖AK8K90", "皖A23Q25", "皖AN180P", "皖A188E3", "皖AU9E68",
 		}
 	}
 	function init() {
-		document.getElementById("test").innerText = "tttt";
+		var onGroundCount = onGround.length;
+		var underGroundCount = underGround.length;
+		document.getElementById("onground").innerText = onGroundCount;
+		document.getElementById("underground").innerText = underGroundCount;
+		document.getElementById("total").innerText = onGroundCount + underGroundCount;
+		
 		if (onGround.filter == undefined) {
-			document.getElementById("test").innerText = "ttt 请换一个浏览器尝试</span>";
+			matchedList.innerHTML = "<span style='color:red'>您的浏览器不支持该查询功能，请换一个浏览器尝试</span>";
+		} else {
+			var numInput = document.getElementById("num")
+			numInput.focus();
+		//	numInput.onkeyup = doSearch;
+		}
+		document.getElementById("test").innerText = "aaaa";
+		if (onGround.filter == undefined) {
+			document.getElementById("test").innerText = "aaaa 请换一个浏览器尝试</span>";
 		}
 	}
 	</script>
