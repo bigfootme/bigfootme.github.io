@@ -53,12 +53,47 @@ var onGround = ["皖AK8K90", "皖A23Q25", "皖AN180P", "皖A188E3", "皖AU9E68",
 		} else {
 			var numInput = document.getElementById("num")
 			numInput.focus();
-		//	numInput.onkeyup = doSearch;
+			numInput.onkeyup = doSearch;
 		}
-		document.getElementById("test").innerText = "aaaa";
+		document.getElementById("test").innerText = "bbbb";
 		if (onGround.filter == undefined) {
-			document.getElementById("test").innerText = "aaaa 请换一个浏览器尝试</span>";
+			document.getElementById("test").innerText = "bbbb 请换一个浏览器尝试</span>";
 		}
+	}
+	
+	function doSearch(env) {
+/*
+		target = env.target;
+		
+		var num = target.value.trim();
+		if(num.length >= 3) {
+			var onGroundMatched = search(onGround, num.toUpperCase());
+			var underGroundMatched = search(underGround, num.toUpperCase());
+			
+			var result = "";
+			if (onGroundMatched.length <= 0 && underGroundMatched.length <= 0) {
+				result = "<span style='color:red'>未查找到相关登记车辆，请将该车辆拍照</span>";
+			} else {
+				if (onGroundMatched.length > 0) {
+					result += "地面：" + onGroundMatched.join(", ");
+				}
+				if (underGroundMatched.length > 0){
+					if (onGroundMatched.length > 0) {
+						result += "<br>";
+					}
+					result += "地库：" + underGroundMatched.join(", ");
+				}
+			}
+			
+			matchedList.innerHTML = result;
+		} else {
+			matchedList.innerHTML = "";
+		}
+		*/
+	}
+	
+	function search(data, key) {
+		return data.filter(element => element.substring(2).startsWith(key));
 	}
 	</script>
 </body>
