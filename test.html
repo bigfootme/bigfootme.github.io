@@ -55,9 +55,9 @@ var onGround = ["皖AK8K90", "皖A23Q25", "皖AN180P", "皖A188E3", "皖AU9E68",
 			numInput.focus();
 			numInput.onkeyup = doSearch;
 		}
-		document.getElementById("test").innerText = "bbbb";
+		document.getElementById("test").innerText = "cccc";
 		if (onGround.filter == undefined) {
-			document.getElementById("test").innerText = "bbbb 请换一个浏览器尝试</span>";
+			document.getElementById("test").innerText = "cccc 请换一个浏览器尝试</span>";
 		}
 	}
 	
@@ -91,11 +91,14 @@ var onGround = ["皖AK8K90", "皖A23Q25", "皖AN180P", "皖A188E3", "皖AU9E68",
 		}
 		*/
 	}
-	/*
+
 	function search(data, key) {
-		return data.filter(element => element.substring(2).startsWith(key));
+		// return data.filter(element => element.substring(2).startsWith(key));
+		return data.filter(function(item){
+			return item.substring(2).startsWith(key);
+		});
 	}
-	*/
+	
 	</script>
 </body>
 </html>
