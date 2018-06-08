@@ -93,7 +93,10 @@ function init() {
 	}
 	
 	function search(data, key) {
-		return data.filter(element => element.substring(2).startsWith(key));
+		// return data.filter(element => element.substring(2).startsWith(key));
+		return data.filter(function(item){
+			return item.substring(2).startsWith(key);
+		});
 	}
 	
 	function showHelp() {
