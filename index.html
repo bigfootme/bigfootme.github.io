@@ -99,6 +99,13 @@ function init() {
 	}
 	
 	function search(data, key) {
+		// TODO 以下暂时没有做，车牌数据目前较规整
+		// 车牌基础数据要求：
+			//应保证只有数字0，而不是字母O（大小写），只有数字1，而不是字母I（大小写）
+			//所有字母应该大写（或者预先对数据进行处理）
+		// 用户查询关键字优化
+			// 如果用户输入字母O（大小写），应自动转成数字0再查询
+			// 如果用户输入字母I（大小写），应自动转成数字1再查询
 		// return data.filter(element => element.substring(2).startsWith(key));
 		return data.filter(function(item){
 			return item.substring(2).startsWith(key);

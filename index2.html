@@ -1,0 +1,145 @@
+<html>
+<head>
+	<meta charset='UTF-8'>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta http-equiv="pragma" content="no-cache"> 
+	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate"> 
+	<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+	
+	<style>
+		#container {
+			margin: 20px;
+		}
+		#num {
+			font-size: 20pt;
+			padding-left: 5px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		.msg {
+			font-size: 10pt;
+		}
+		#help {
+			font-size: 10pt;
+		}
+	</style>
+</head>
+<body onload="init();">
+	<div id="container">
+		<b>九玺北区登记车辆查询</b><span class="msg">(数据20180607)</span><br>
+		<span class="msg">(输入车牌号的前3位查询)</span>
+		
+		<a href="#" id="help" onclick="showHelp();">帮助</a>
+		<br>
+		<div id="helpMsg" class="msg" style="display:none">
+			1-查询时不要输入省地代码如皖A<br>
+			2-车牌号查询不区分大小写<br>
+			3-在九玺北区发现未登记车请拍照保存<br>
+			4-若查询无法使用请换一个浏览器尝试<br>
+			<br>
+			数据说明<br>
+			-登记车辆总数<span id="total"></span>，地面<span id="onground"></span>，地库<span id="underground"></span><br>
+			-数据由物业提供，待业主核实<br>
+		</div>
+		<input id="num" size=10/>
+		<div id="matched">
+			<noscript>
+				<span style='color:red'>您的浏览器不支持JavaScript，无法使用查询功能，请换一个浏览器尝试</span>
+			</noscript>
+		</div>
+	</div>
+<script language="javascript" type="text/javascript" charset="utf-8" src="data.js"></script>
+<script language="javascript" type="text/javascript" charset="utf-8" >
+function init() {
+		var onGroundCount = onGround.length;
+		var underGroundCount = underGround.length;
+		document.getElementById("onground").innerText = onGroundCount;
+		document.getElementById("underground").innerText = underGroundCount;
+		document.getElementById("total").innerText = onGroundCount + underGroundCount;
+		
+		if (onGround.filter == undefined) {
+			matchedList.innerHTML = "<span style='color:red'>您的浏览器不支持该查询功能，请换一个浏览器尝试</span>";
+		} else {
+			var numInput = document.getElementById("num")
+			numInput.focus();
+			numInput.onkeyup = doSearch;
+		}
+	}
+	
+	var matchedList = document.getElementById("matched");
+	function doSearch(env) {
+		var num = env.target.value.trim().toUpperCase();
+		if (num.length < 3) {
+			matchedList.innerHTML = "";
+		} else {
+			var onGroundMatched, underGroundMatched, key, isFuzzy;
+			if(num.endsWith("*") && num.length >= 4) { // do fuzzy search, its a hidden feature
+				key = num.substring(0, num.length - 1);
+				isFuzzy = true;
+			} else { // num.length == 3 || (num.length > 3 && !num.endsWith("*"))
+				key = num;
+				isFuzzy = false;
+			}
+			onGroundMatched = search(onGround, key, isFuzzy);
+			underGroundMatched = search(underGround, key, isFuzzy);
+			showResult(onGroundMatched, underGroundMatched);
+		}
+	}
+	
+	// TODO 以下暂时没有做，车牌数据目前较规整
+	// 车牌基础数据要求：
+		//应保证只有数字0，而不是字母O（大小写），只有数字1，而不是字母I（大小写）
+		//所有字母应该大写（或者预先对数据进行处理）
+	// 用户查询关键字优化
+		// 如果用户输入字母O（大小写），应自动转成数字0再查询
+		// 如果用户输入字母I（大小写），应自动转成数字1再查询
+	// return data.filter(element => element.substring(2).startsWith(key)); // browsers on iOS do not support this, both safari, UC were tested
+	
+	function search(data /*search from*/, key /*the key to search*/, isFuzzy) {
+		return isFuzzy ? fuzzySearch(data, key) : exactSearch(data, key);
+	}
+	
+	function exactSearch(data /*search from*/, key /*the key to search*/) {
+		return data.filter(function(item){
+			return item.substring(2).startsWith(key);
+		});
+	}
+
+	function fuzzySearch(data /*search from*/, key /*the key to search*/) {
+		return data.filter(function(item){
+			return item.substring(2).indexOf(key) >= 0;
+		});
+	}
+	
+	function showResult(onGroundMatched, underGroundMatched) {
+		var result = "";
+		if (onGroundMatched.length <= 0 && underGroundMatched.length <= 0) {
+			result = "<span style='color:red'>未查找到相关登记车辆，请将该车辆拍照</span>";
+		} else {
+			if (onGroundMatched.length > 0) {
+				result += "地面：" + onGroundMatched.join(", ");
+			}
+			if (underGroundMatched.length > 0){
+				if (onGroundMatched.length > 0) {
+					result += "<br>";
+				}
+				result += "地库：" + underGroundMatched.join(", ");
+			}
+		}
+		
+		matchedList.innerHTML = result;
+	}
+	
+	function showHelp() {
+		var helpMsg = document.getElementById("helpMsg");
+		if (helpMsg.style.display == "none") {
+			helpMsg.style.display = "block";
+			document.getElementById("help").text = "隐藏";
+		} else {
+			helpMsg.style.display = "none";
+			document.getElementById("help").text = "帮助";
+		}
+	}
+	</script>
+</body>
+</html>
