@@ -50,7 +50,7 @@
 	</div>
 <script language="javascript" type="text/javascript" charset="utf-8" src="data.js"></script>
 <script language="javascript" type="text/javascript" charset="utf-8" >
-function init() {
+	function init() {
 		var onGroundCount = onGround.length;
 		var underGroundCount = underGround.length;
 		document.getElementById("onground").innerText = onGroundCount;
@@ -68,21 +68,21 @@ function init() {
 	
 	var matchedList = document.getElementById("matched");
 	function doSearch(env) {
-		var num = env.target.value.trim().toUpperCase();
-		if (num.length < 3) {
+		var key = env.target.value.trim().toUpperCase();
+		var isFuzzy = false;
+		
+		if (key.endsWith("*")) {
+			isFuzzy = true;
+			key = key.substring(0, key.length - 1);
+		}
+		if (key.length < 3) {
 			matchedList.innerHTML = "";
 		} else {
-			var onGroundMatched, underGroundMatched, key, isFuzzy;
-			if(num.endsWith("*") && num.length >= 4) { // do fuzzy search, its a hidden feature
-				key = num.substring(0, num.length - 1);
-				isFuzzy = true;
-			} else { // num.length == 3 || (num.length > 3 && !num.endsWith("*"))
-				key = num;
-				isFuzzy = false;
-			}
-			onGroundMatched = search(onGround, key, isFuzzy);
-			underGroundMatched = search(underGround, key, isFuzzy);
-			showResult(onGroundMatched, underGroundMatched);
+			var onGroundMatched = search(onGround, key, isFuzzy);
+			var underGroundMatched = search(underGround, key, isFuzzy);
+			
+			showResult([{"title":"地面", "carlist":onGroundMatched},
+						{"title":"地库", "carlist":underGroundMatched}]);
 		}
 	}
 	
@@ -111,23 +111,19 @@ function init() {
 		});
 	}
 	
-	function showResult(onGroundMatched, underGroundMatched) {
-		var result = "";
-		if (onGroundMatched.length <= 0 && underGroundMatched.length <= 0) {
-			result = "<span style='color:red'>未查找到相关登记车辆，请将该车辆拍照</span>";
-		} else {
-			if (onGroundMatched.length > 0) {
-				result += "地面：" + onGroundMatched.join(", ");
-			}
-			if (underGroundMatched.length > 0){
-				if (onGroundMatched.length > 0) {
-					result += "<br>";
-				}
-				result += "地库：" + underGroundMatched.join(", ");
+	function showResult(datas) {
+		var results = [];
+		for (var idx in datas) {
+			var carlist = datas[idx]["carlist"];
+			if (carlist.length > 0) {
+				results.push(datas[idx]["title"] + ": " + carlist.join(", "));
 			}
 		}
 		
-		matchedList.innerHTML = result;
+		if (results.length == 0) {
+			results.push("<span style='color:red'>未查找到相关登记车辆，请将该车辆拍照</span>");
+		}
+		matchedList.innerHTML = results.join("<br>");
 	}
 	
 	function showHelp() {
